@@ -122,8 +122,10 @@ def update_movement_controls():
     global speed, angle, record, done, key_val, key_old
     print(key_val)
     if key_val == "RIGHT":
+        speed = 0.6
         angle = speed
     elif key_val == "LEFT":
+        speed = 0.6
         angle = -speed
     elif key_val == "UP":
         speed = 0.4
@@ -159,6 +161,7 @@ def main():
     """
     global speed, angle, record, done, key_val, key_old
     while True:
+        speed = 0.4
         angle = 0
         get_key_press()
         update_movement_controls()
