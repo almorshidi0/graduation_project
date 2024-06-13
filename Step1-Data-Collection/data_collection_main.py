@@ -120,6 +120,7 @@ def update_movement_controls():
         None
     """
     global speed, angle, record, done, key_val, key_old
+    print(key_val, sep="/")
     if key_val == "RIGHT":
         angle = speed
     elif key_val == "LEFT":
@@ -142,6 +143,7 @@ def update_movement_controls():
         record += 1
     if key_val != "r":
         key_val = None
+    print(key_val)
 
 def main():
     """
