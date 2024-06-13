@@ -161,7 +161,6 @@ def main():
     """
     global speed, angle, record, done, key_val, key_old
     while True:
-        speed = 0.4
         angle = 0
         get_key_press()
         update_movement_controls()
