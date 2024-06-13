@@ -167,10 +167,13 @@ def main():
         update_movement_controls()
 
         # Control vehicle movement
-        if speed >= 0:
+        if speed > 0:
             motor_controller.move_forward(speed, angle)
-        else:
+            speed = 0.4
+        elif speed < 0:
             motor_controller.move_backward(-speed, angle)
+        else:
+            motor_controller.stop()
 
         # Start recording
         if record == 1:
