@@ -119,7 +119,7 @@ def update_movement_controls():
     Returns:
         None
     """
-    global speed, angle, record, done, key_old, key_val
+    global speed, angle, record, done, key_val, key_old
     if key_val == "RIGHT":
         angle = speed
     elif key_val == "LEFT":
@@ -138,8 +138,10 @@ def update_movement_controls():
     elif key_val == key_old:
         pass
     elif key_val == "r":
+        key_old = key_val
         record += 1
-    key_val = key_old
+    if key_val != "r":
+        key_val = None
 
 def main():
     """
@@ -153,7 +155,7 @@ def main():
     Returns:
         None
     """
-    global speed, angle, record, done
+    global speed, angle, record, done, key_val, key_old
     while True:
         angle = 0
         get_key_press()
@@ -163,7 +165,7 @@ def main():
         if speed >= 0:
             motor_controller.move_forward(speed, angle)
         else:
-            motor_controller.move_backward(speed, angle)
+            motor_controller.move_backward(-speed, angle)
 
         # Start recording
         if record == 1:

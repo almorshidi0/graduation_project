@@ -77,7 +77,6 @@ class DcMotorController:
             speed: Speed of backward motion, ranging from 0 (full stop) to 1 (full backward). Default is 0.5.
             angle: Turn value, ranging from -1 (full left) to 1 (full right). Default is 0.
         """
-        speed = -speed
         speed = max(0, min(1, speed))
         angle = max(-1, min(1, angle))
         speed_right = speed - angle
