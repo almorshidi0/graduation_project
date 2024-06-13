@@ -142,6 +142,7 @@ def update_movement_controls():
         key_old = key_val
         record += 1
     if key_val != "r":
+        key_val = None
         key_old = None
     print(key_val)
 
