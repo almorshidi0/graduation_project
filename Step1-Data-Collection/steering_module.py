@@ -30,21 +30,21 @@ Note:
 This script is intended to run on a Raspberry Pi with a connected servo motor.
 """
 
-from gpiozero import AngularServo
+from gpiozero import Servo
 from time import sleep
 
 class SteeringController:
     """
     Class to control a steering servo motor.
     """
-    def __init__(self, pin=17, min = -90, max = 90):
+    def __init__(self, pin=17):
         """
         Initialize the servo motor with the specified GPIO pin.
 
         Args:
             pin: GPIO pin for the servo signal. Default is 17.
         """
-        self.servo = AngularServo(pin, min_angle = min, max_angle = max)
+        self.servo = Servo(pin)
 
     def set_angle(self, ratio):
         """
@@ -54,11 +54,11 @@ class SteeringController:
             ratio: Ratio for the angle, ranging from -1 (minimum position) to 1 (maximum position).
         """
         ratio = max(-1, min(1, ratio))
-        self.servo.angle = int(ratio * 90)
+        self.servo.value = ratio
 
-    # def detach(self):
-    #     """Release the GPIO resources used by the servo."""
-    #     self.servo.detach()
+    def detach(self):
+        """Release the GPIO resources used by the servo."""
+        self.servo.detach()
 
 def main():
     """
@@ -83,17 +83,17 @@ def main():
         while True:
             # Set angle to maximum (1.0)
             print("Setting angle to maximum (1.0)")
-            steering_controller.servo.min()
+            steering_controller.set_angle(0.1)
             sleep(2)
 
             # Set angle to middle (0.0)
             print("Setting angle to middle (0.0)")
-            steering_controller.servo.mid()
+            steering_controller.set_angle(0.0)
             sleep(2)
 
             # Set angle to minimum (-1.0)
             print("Setting angle to minimum (-1.0)")
-            steering_controller.servo.max()
+            steering_controller.set_angle(-0.1)
             sleep(2)
 
             # Sweep back and forth
@@ -103,7 +103,7 @@ def main():
                 sleep(2)
             
     except KeyboardInterrupt:
-        # steering_controller.detach()
+        steering_controller.detach()
         print()
         print("Steering servo motor control terminated!")
 
