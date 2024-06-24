@@ -91,7 +91,7 @@ def main():
     try:
         while True:
             # Move Forward
-            motor_controller.move(0.6)
+            motor_controller.move(0.3)
             sleep(2)
             print("The car is moving forward!")
             motor_controller.stop()
@@ -99,7 +99,7 @@ def main():
             sleep(2)
             
             # Move Backward
-            motor_controller.move(0.6)
+            motor_controller.move(0.3)
             print("The car is moving backward!")
             sleep(2)
             motor_controller.stop()
