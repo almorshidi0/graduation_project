@@ -30,21 +30,21 @@ Note:
 This script is intended to run on a Raspberry Pi with a connected servo motor.
 """
 
-from gpiozero import Servo
+from gpiozero import AngularServo
 from time import sleep
 
 class SteeringController:
     """
     Class to control a steering servo motor.
     """
-    def __init__(self, pin=17):
+    def __init__(self, pin=17, min_angle = -90, max_angle = 90):
         """
         Initialize the servo motor with the specified GPIO pin.
 
         Args:
             pin: GPIO pin for the servo signal. Default is 17.
         """
-        self.servo = Servo(pin)
+        self.servo = AngularServo(pin, min_angle, max_angle)
 
     def set_angle(self, ratio):
         """
@@ -54,7 +54,7 @@ class SteeringController:
             ratio: Ratio for the angle, ranging from -1 (minimum position) to 1 (maximum position).
         """
         ratio = max(-1, min(1, ratio))
-        self.servo.value = ratio
+        self.servo.angle = int(ratio * 90)
 
     def detach(self):
         """Release the GPIO resources used by the servo."""
@@ -83,7 +83,7 @@ def main():
         while True:
             # Set angle to maximum (1.0)
             print("Setting angle to maximum (1.0)")
-            steering_controller.set_angle(1.0)
+            steering_controller.set_angle(0.1)
             sleep(2)
 
             # Set angle to middle (0.0)
@@ -93,12 +93,12 @@ def main():
 
             # Set angle to minimum (-1.0)
             print("Setting angle to minimum (-1.0)")
-            steering_controller.set_angle(-1.0)
+            steering_controller.set_angle(-0.1)
             sleep(2)
 
             # Sweep back and forth
             print("Sweeping back and forth")
-            for ratio in [-1, 0, 1, 0]:
+            for ratio in [-0.1, 0, 0.1, 0]:
                 steering_controller.set_angle(ratio)
                 sleep(2)
             
