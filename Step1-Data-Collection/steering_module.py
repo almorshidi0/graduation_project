@@ -56,9 +56,9 @@ class SteeringController:
         ratio = max(-1, min(1, ratio))
         self.servo.angle = int(ratio * 90)
 
-    def detach(self):
-        """Release the GPIO resources used by the servo."""
-        self.servo.detach()
+    # def detach(self):
+    #     """Release the GPIO resources used by the servo."""
+    #     self.servo.detach()
 
 def main():
     """
@@ -83,17 +83,17 @@ def main():
         while True:
             # Set angle to maximum (1.0)
             print("Setting angle to maximum (1.0)")
-            steering_controller.set_angle(0.1)
+            steering_controller.servo.min()
             sleep(2)
 
             # Set angle to middle (0.0)
             print("Setting angle to middle (0.0)")
-            steering_controller.set_angle(0.0)
+            steering_controller.servo.mid()
             sleep(2)
 
             # Set angle to minimum (-1.0)
             print("Setting angle to minimum (-1.0)")
-            steering_controller.set_angle(-0.1)
+            steering_controller.servo.max()
             sleep(2)
 
             # Sweep back and forth
@@ -103,7 +103,7 @@ def main():
                 sleep(2)
             
     except KeyboardInterrupt:
-        steering_controller.detach()
+        # steering_controller.detach()
         print()
         print("Steering servo motor control terminated!")
 
