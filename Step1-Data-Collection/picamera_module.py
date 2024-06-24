@@ -94,12 +94,12 @@ def main():
     None
     """
     camera_controller = PiCameraController()
-    roi = (0.0, 0.2, 0.8, 0.8)
-    camera_controller.pi_cam_init(roi=roi)
-    count = 0 
-    while count < 10:
-        camera_controller.get_img(f"test_{count}")
-        count += 1
+    camera_controller.pi_cam_init()
+    camera_controller.get_img(f"test_1")
+    roi0 = (0.0, 0.2, 0.8, 0.8)
+    # roi1 = (0.0, 0.0, 1, 1)
+    camera_controller.pi_cam_init(roi=roi0)
+    camera_controller.get_img(f"test_0")
 
 if __name__ == '__main__':
     main()
