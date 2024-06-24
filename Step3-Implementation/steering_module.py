@@ -37,14 +37,14 @@ class SteeringController:
     """
     Class to control a steering servo motor.
     """
-    def __init__(self, pin=17, min_angle = -90, max_angle = 90):
+    def __init__(self, pin=17, min = -90, max = 90):
         """
         Initialize the servo motor with the specified GPIO pin.
 
         Args:
             pin: GPIO pin for the servo signal. Default is 17.
         """
-        self.servo = AngularServo(pin, min_angle, max_angle)
+        self.servo = AngularServo(pin, min_angle = min, max_angle = max)
 
     def set_angle(self, ratio):
         """
