@@ -9,12 +9,15 @@ The script continuously captures images, processes them, and uses a machine lear
 
 Modules:
 --------
-- dc_motors_module: Controls the car's DC motors for movement.
-- picamera_module: Interfaces with the Raspberry Pi Camera for image capture.
+
+- motor_module      : Control car movement.
+- steering_module   : Control car steering.
+- picamera_module   : Interfaces with the Raspberry Pi Camera for image capture.
 
 Global Variables:
 -----------------
-- motor: Instance of DcMotorController to control the motors.
+- motor     : Instance of MotorController to control the motor.
+- steering  : Instance of SteeringController to control the steering angle.
 - camera: Instance of PiCameraController to capture images.
 - model: Pre-trained machine learning model for speed and angle prediction.
 
@@ -25,14 +28,15 @@ Functions:
 
 Example Usage:
 --------------
-To run the script, ensure the required modules (dc_motors_module, picamera_module) are imported and available in the environment.
+To run the script, ensure the required modules (motors_module, steering_module, picamera_module) are imported and available in the environment.
 
     $ python autonomous_car_controller.py
 
 Dependencies:
 -------------
-- dc_motors_module: Ensure that the `dc_motors_module` module is properly implemented and available.
-- picamera_module: Ensure that the `picamera_module` module is properly implemented and available.
+- motors_module     : Ensure that the `dc_motors_module` module is properly implemented and available.
+- steering_module   : Ensure that the `steering_module` module is properly implemented and available.
+- picamera_module   : Ensure that the `picamera_module` module is properly implemented and available.
 
 Note:
 -----
@@ -44,11 +48,13 @@ import os
 import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
-from dc_motors_module import DcMotorController
+from motor_module import MotorController
+from steering_module import SteeringController
 from picamera_module import PiCameraController
 
 # Initializing modules
-motor = DcMotorController(17, 27, 22, 25, 23, 24)
+motor = MotorController(25, 23, 24)
+steering_controller = SteeringController(17)
 
 camera_controller = PiCameraController()
 roi = (0.0, 0.2, 0.8, 0.8) #ratio of interest
@@ -91,7 +97,8 @@ def main():
         speed = float(prediction[0][1])  # Extract speed
 
         print(f"Angle: {angle}, Speed: {speed}")  # Print values
-        motor.move_forward(speed, angle)  # Control motors
+        motor.move(speed)  # Control motor
+        steering_controller.set_angle(angle)
         cv2.waitKey(1)  # Wait for 1 ms
 
 if __name__ == "__main__":

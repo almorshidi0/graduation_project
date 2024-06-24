@@ -4,69 +4,77 @@ Data Collection Main Program
 
 This script controls a car's movement using key presses and records data while the car is in motion.
 
-It initializes modules for data collection, key press detection, control of DC motors, and the PiCamera module for image capture.
-The script continuously monitors key presses to adjust the car's speed and steering angle .
+It initializes modules for motor control, steering control, data collection, key press detection, and the PiCamera module for image capture.
+The script continuously monitors key presses to adjust the car's speed and steering angle to control the car.
 Key presses trigger various actions, such as adjusting speed and angle, starting and stopping recording, and terminating the program.
 Recorded data includes images and corresponding speed and steering angle.
 
 Modules:
 --------
-- data_collection_module: Handles data collection and saving.
-- key_press_module: Manages key press detection and control.
-- dc_motors_module: Controls the car's DC motors for movement.
-- picamera_module: Interfaces with the Raspberry Pi Camera for image capture.
+- data_collection_module    : Handles data collection and saving.
+- key_press_module          : Manages key press detection and control.
+- motor_module              : Control car movement.
+- steering_module           : Control car steering.
+- picamera_module           : Interfaces with the Raspberry Pi Camera for image capture.
 
 Global Variables:
 -----------------
 - done      : Flag variable to terminate the program.
 - record    : Flag variable to control recording status.
 - key_val   : Current pressed key.
-- key_old   : None Last pressed key
+- key_old   : Last pressed key
 - speed     : Speed
 - angle     : Steering angle
 
 Functions:
 ----------
-- main(): Main function to control the car's movement, handle key presses, and manage data recording.
+- get_key_press()               : Get key press status and update global variables.
+- update_movement_controls()    : Update speed and angle based on key presses.
+- main()                        : Main function to control the car's movement, handle key presses, and manage data recording.
+
 
 Key Presses:
 ------------
-- RIGHT: Increase speed and steer right.
-- LEFT: Increase speed and steer left.
-- UP: Increase speed.
-- DOWN: Decrease speed.
-- r: Start or stop recording.
-- s: Stop the car.
-- k: Terminate the program.
+- RIGHT : Steer right.
+- LEFT  : Steer left.
+- UP    : Move forward.
+- DOWN  : Move backward.
+- r     : Start or stop recording.
+- s     : Stop the car.
+- k     : Terminate the program.
 
 Example Usage:
 --------------
-To run the script, ensure the required modules (data_collection_module, key_press_module, dc_motors_module, picamera_module) are imported and available in the environment.
+To run the script, ensure the required modules (data_collection_module, key_press_module, motor_module, steering_module, picamera_module) are imported and available in the environment.
 
     $ python3 data_collection_main.py
 
 Dependencies:
 -------------
-- data_collection_module: Ensure that the `data_collection_module` module is properly implemented and available.
-- key_press_module: Ensure that the `key_press_module` module is properly implemented and available.
-- dc_motors_module: Ensure that the `dc_motors_module` module is properly implemented and available.
-- picamera_module: Ensure that the `picamera_module` module is properly implemented and available.
+- data_collection_module    : Ensure that the `data_collection_module` module is properly implemented and available.
+- key_press_module          : Ensure that the `key_press_module` module is properly implemented and available.
+- motor_module              : Ensure that the `motor_module` module is properly implemented and available.
+- steering_module           : Ensure that the `steering_module` module is properly implemented and available.
+- picamera_module           : Ensure that the `picamera_module` module is properly implemented and available.
 
 Note:
 -----
 This script is designed to control an autonomous car system and requires proper hardware setup and configuration.
 """
 
-
 # Importing necessary modules
 import os
 from data_collection_module import DataCollector
 from key_press_module       import KeyPressController
-from dc_motors_module       import DcMotorController
+from motor_module           import MotorController
+from steering_module        import SteeringController
 from picamera_module        import PiCameraController
 
 # Constants
 KEY_LIST = ["RIGHT", "LEFT", "UP", "DOWN", "r", "s", "k"]
+DEFAULT_SPEED = 0.5
+DEFAULT_ANGLE = 0.1
+ROI = (0.0, 0.2, 0.8, 0.8) # Ratio of interest
 
 # Global Variables
 done    = 0     # Flag variable to terminate the program
@@ -83,11 +91,12 @@ data_collector.data_collection_init()
 key_controller = KeyPressController()
 key_controller.key_press_init()
 
-motor_controller = DcMotorController(17, 27, 22, 25, 23, 24)
+motor_controller = MotorController(25, 23, 24)
+
+steering_controller = SteeringController(17)
 
 camera_controller = PiCameraController()
-roi = (0.0, 0.2, 0.8, 0.8) #ratio of interest
-camera_controller.pi_cam_init(roi)
+camera_controller.pi_cam_init(ROI)
 
 def get_key_press():
     """
@@ -121,16 +130,16 @@ def update_movement_controls():
     """
     global speed, angle, record, done, key_val, key_old
     if key_val == "RIGHT":
-        speed = 0.6
-        angle = speed
+        speed = DEFAULT_SPEED
+        angle = DEFAULT_ANGLE
     elif key_val == "LEFT":
-        speed = 0.6
-        angle = -speed
+        speed = DEFAULT_SPEED
+        angle = -DEFAULT_ANGLE
     elif key_val == "UP":
-        speed = 0.4
+        speed = DEFAULT_SPEED
         angle = 0
     elif key_val == "DOWN":
-        speed = -0.4
+        speed = -DEFAULT_SPEED
         angle = 0
     elif key_val == "s":
         speed = 0
@@ -164,15 +173,9 @@ def main():
         get_key_press()
         update_movement_controls()
 
-        # Control vehicle movement
-        if speed > 0:
-            motor_controller.move_forward(speed, angle)
-            speed = 0.4
-        elif speed < 0:
-            motor_controller.move_backward(-speed, angle)
-        else:
-            motor_controller.stop()
-
+        motor_controller.move(speed)
+        steering_controller.set_angle(angle)
+        
         # Start recording
         if record == 1:
             print("Recording Started ...")
@@ -196,6 +199,8 @@ def main():
         if done != 0:
             motor_controller.stop()
             motor_controller.release()
+            steering_controller.set_angle(0)
+            steering_controller.detach()
             break
 
 if __name__ == "__main__":

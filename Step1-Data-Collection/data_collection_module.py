@@ -94,7 +94,6 @@ class DataCollector:
         timestamp = str(datetime.timestamp(now)).replace('.', '')
         img_name = f"{os.path.join(img_path, f'img_{len(self.img_list)}_{timestamp}')}"
         camera_controller.get_img(img_name)
-        print(len(self.img_list))
         self.img_list.append(img_name)
         self.speed_list.append(speed)
         self.angle_list.append(angle)

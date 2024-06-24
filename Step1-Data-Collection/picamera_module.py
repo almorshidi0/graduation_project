@@ -63,27 +63,7 @@ class PiCameraController:
         time.sleep(2)
 
         if roi:
-            self.set_roi(roi)
-
-    def set_roi(self, roi):
-        """
-        Set the region of interest (ROI) for the camera.
-
-        Args:
-        roi (tuple): A tuple defining the region of interest (ROI) as (x, y, width, height).
-        
-        Returns:
-        None
-        """
-        # Get the current configuration's size
-        width, height = self.pi_cam.sensor_resolution
-        x = int(roi[0] * width)
-        y = int(roi[1] * height)
-        roi_width = int(roi[2] * width)
-        roi_height = int(roi[3] * height)
-
-        # Set the ROI using the calculated absolute pixel values
-        self.pi_cam.set_controls({"ScalerCrop": (x, y, roi_width, roi_height)})
+            self.pi_cam.set_controls({"ScalerCrop": roi})
 
     def get_img(self, file_name):
         """
