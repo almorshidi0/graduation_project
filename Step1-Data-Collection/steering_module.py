@@ -83,7 +83,7 @@ def main():
         while True:
             # Set angle to maximum (1.0)
             print("Setting angle to maximum (1.0)")
-            steering_controller.set_angle(1.0)
+            steering_controller.set_angle(0.1)
             sleep(2)
 
             # Set angle to middle (0.0)
@@ -93,12 +93,12 @@ def main():
 
             # Set angle to minimum (-1.0)
             print("Setting angle to minimum (-1.0)")
-            steering_controller.set_angle(-1.0)
+            steering_controller.set_angle(-0.1)
             sleep(2)
 
             # Sweep back and forth
             print("Sweeping back and forth")
-            for ratio in [-1, 0, 1, 0]:
+            for ratio in [-0.1, 0, 0.1, 0]:
                 steering_controller.set_angle(ratio)
                 sleep(2)
             
