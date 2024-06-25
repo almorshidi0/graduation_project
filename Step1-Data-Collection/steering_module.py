@@ -78,12 +78,13 @@ def main():
     """
     print("Let's introduce our steering servo motor to our PI!")
     steering_controller = SteeringController(17)
+    right_steering_error_handling = 0
     print("Let's go!")
     try:
         while True:
             # Set angle to maximum (1.0)
-            print("Setting angle to maximum (1.0)")
-            steering_controller.set_angle(0.1)
+            print("Setting angle to maximum (0.5)")
+            steering_controller.set_angle(0.5)
             sleep(2)
 
             # Set angle to middle (0.0)
@@ -92,13 +93,28 @@ def main():
             sleep(2)
 
             # Set angle to minimum (-1.0)
-            print("Setting angle to minimum (-1.0)")
-            steering_controller.set_angle(-0.1)
+            print("Setting angle to minimum (-0.5)")
+            steering_controller.set_angle(-0.5)
+            right_steering_error_handling = 1
+            sleep(2)
+            
+            # Set angle to middle (0.0)
+            print("Setting angle to middle (0.0)")
+            if right_steering_error_handling == 1:
+                steering_controller.set_angle(0.5)
+                right_steering_error_handling = 0
+            steering_controller.set_angle(0.0)
             sleep(2)
 
             # Sweep back and forth
             print("Sweeping back and forth")
-            for ratio in [-0.1, 0, 0.1, 0]:
+            for ratio in [-0.5, 0, 0.5, 0]:
+                if right_steering_error_handling == 1:
+                    if ratio == 0:
+                        steering_controller.set_angle(0.5)
+                        right_steering_error_handling = 0
+                if ratio < 0:
+                    right_steering_error_handling = 1
                 steering_controller.set_angle(ratio)
                 sleep(2)
             

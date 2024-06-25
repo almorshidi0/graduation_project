@@ -156,11 +156,6 @@ def update_movement_controls():
         key_val = None
         key_old = None
 
-def handle_right_steering_error():
-    if angle < 0:
-        steering_controller.set_angle(-angle)
-    return -angle
-
 def main():
     """
     Main function to control the car's movement.
@@ -173,7 +168,7 @@ def main():
     Returns:
         None
     """
-    global speed, angle, record, done, key_val, key_old
+    global speed, angle, record, done, key_val, key_old, right_steering_error_handling
     while True:
         angle = 0
         get_key_press()
@@ -182,7 +177,7 @@ def main():
         motor_controller.move(speed)
         if right_steering_error_handling == 1:
             if angle == 0:
-                angle = handle_right_steering_error()
+                steering_controller.set_angle(DEFAULT_ANGLE)
                 right_steering_error_handling = 0
         if angle < 0:
             right_steering_error_handling = 1
