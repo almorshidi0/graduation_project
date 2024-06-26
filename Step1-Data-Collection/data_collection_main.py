@@ -97,7 +97,6 @@ motor_controller = MotorController(25, 23, 24)
 steering_controller = SteeringController(18)
 
 camera_controller = CameraController()
-camera_controller.pi_cam_init(roi=ROI)
 
 def get_key_press():
     """
@@ -193,7 +192,7 @@ def main():
             record += 1
         # Collect data
         if record == 2:
-            data_collector.collect_data(camera_controller, new_path, speed, angle)
+            data_collector.collect_data(camera_controller, new_path, speed, angle, roi=ROI)
         # Save data and reset
         elif record == 3:
             record = 0

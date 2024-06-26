@@ -77,7 +77,7 @@ class DataCollector:
         self.speed_list = []
         self.angle_list = []
 
-    def collect_data(self, camera_controller, img_path, speed, angle):
+    def collect_data(self, camera_controller, img_path, speed, angle, roi=None):
         """
         Collect data by saving images and logging the speed and steering angle.
 
@@ -93,7 +93,7 @@ class DataCollector:
         now = datetime.now()
         timestamp = str(datetime.timestamp(now)).replace('.', '')
         img_name = f"{os.path.join(img_path, f'img_{len(self.img_list)}_{timestamp}')}"
-        camera_controller.get_img(img_name)
+        camera_controller.get_img(img_name, roi=roi)
         self.img_list.append(img_name)
         self.speed_list.append(speed)
         self.angle_list.append(angle)
