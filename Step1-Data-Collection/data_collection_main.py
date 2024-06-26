@@ -72,7 +72,7 @@ from picamera_module        import CameraController
 
 # Constants
 KEY_LIST = ["RIGHT", "LEFT", "UP", "DOWN", "r", "s", "k"]
-DEFAULT_SPEED = 0.6
+DEFAULT_SPEED = 1
 DEFAULT_ANGLE = 0.5
 ROI = (0.0, 0.2, 0.8, 0.8) # Ratio of interest
 
