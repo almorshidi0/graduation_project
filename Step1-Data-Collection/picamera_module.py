@@ -2,7 +2,7 @@
 PiCamera Module
 ===============
 
-This module provides a simple interface to initialize the PiCamera and capture images using the `picamera2` library.
+This module provides a simple interface to initialize the PiCamera and capture images using the `picamera` library.
 
 Classes:
 --------
@@ -24,14 +24,14 @@ To test this module, you can run it directly as a script. It will initialize the
 
 Dependencies:
 -------------
-- picamera2: Ensure that the `picamera2` library is installed and properly configured on your system.
+- picamera: Ensure that the `picamera` library is installed and properly configured on your system.
 
 Note:
 -----
 This script is intended to run on a Raspberry Pi with a connected camera module.
 """
 
-from picamera2 import Picamera2
+from picamera import PiCamera
 import time
 
 class PiCameraController:
@@ -43,9 +43,9 @@ class PiCameraController:
 
     def pi_cam_init(self, roi=None):
         """
-        Initialize and start the PiCamera.
+        Initialize the PiCamera.
 
-        This method sets up the `pi_cam` attribute, configures the camera, and starts it.
+        This method sets up the `pi_cam` attribute and configures the camera.
         
         Args:
         roi (tuple, optional): A tuple defining the region of interest (ROI) as (x, y, width, height).
@@ -54,16 +54,15 @@ class PiCameraController:
         Returns:
         None
         """
-        self.pi_cam = Picamera2()
-        # config = self.pi_cam.create_still_configuration()
-        # self.pi_cam.configure(config)
-        self.pi_cam.start()
+        self.pi_cam = PiCamera()
+        # Optionally, configure camera settings here
+        # Example: self.pi_cam.resolution = (1280, 720)
 
-        # # Allow the camera to warm up
+        # Allow the camera to warm up
         time.sleep(2)
 
-        # if roi:
-        #     self.pi_cam.set_controls({"ScalerCrop": roi})
+        if roi:
+            self.pi_cam.zoom = roi
 
     def get_img(self, file_name):
         """
@@ -94,7 +93,8 @@ def main():
     None
     """
     camera_controller = PiCameraController()
-    # roi = (0.0, 0.2, 0.8, 0.8)
+    # Optionally, set a region of interest (ROI)
+    # roi = (0.0, 0.2, 0.8, 0.8)  # Example: Crop 20% from the top and include 80% of the width and height
     # camera_controller.pi_cam_init(roi=roi)
     count = 0 
     while count < 10:
