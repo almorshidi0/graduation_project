@@ -45,7 +45,7 @@ class CameraController:
         self.picam2.configure(self.picam2.create_still_configuration())
         self.picam2.start()
 
-    def get_img(self, file_path='image'):
+    def get_img(self, file_path='image', roi=None):
         """
         Capture an image and save it to the specified file path.
 
@@ -56,6 +56,15 @@ class CameraController:
         self.picam2.capture_file(img_name)
         img = cv2.imread(img_name)
         img = cv2.flip(img, -1)
+        if roi:
+            x, y, w, h = roi
+            height, width, _ = img.shape
+            x_norm, y_norm, w_norm, h_norm = roi
+            x = int(x_norm * width)
+            y = int(y_norm * height)
+            w = int(w_norm * width)
+            h = int(h_norm * height)
+            img = img[y:y+h, x:x+w]
         cv2.imwrite(img_name, img)
         print(f"Image captured and saved to {file_path}")
 
@@ -84,6 +93,8 @@ def main():
     camera_controller = CameraController()
     print("Capturing image...")
     camera_controller.get_img('test_image0')
+    roi0 = (0.0, 0.0, 0.8, 0.8)
+    camera_controller.get_img('test_image1')
     camera_controller.release()
     print("Image captured and saved as 'test_image.jpg'.")
 
