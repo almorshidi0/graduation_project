@@ -41,7 +41,7 @@ class PiCameraController:
         """
         self.pi_cam = None
 
-    def pi_cam_init(self, roi=None):
+    def pi_cam_init(self, roi=None, hflip=False, vflip=False):
         """
         Initialize and start the PiCamera.
 
@@ -50,12 +50,19 @@ class PiCameraController:
         Args:
         roi (tuple, optional): A tuple defining the region of interest (ROI) as (x, y, width, height).
                                Each value should be a proportion of the total image dimensions (0.0 to 1.0).
+        hflip (bool, optional): Horizontal flip the image.
+        vflip (bool, optional): Vertical flip the image.
         
         Returns:
         None
         """
         self.pi_cam = Picamera2()
         config = self.pi_cam.create_still_configuration()
+
+        # Set the flip controls
+        config["controls"]["HorizontalFlip"] = hflip
+        config["controls"]["VerticalFlip"] = vflip
+
         self.pi_cam.configure(config)
         self.pi_cam.start()
 
@@ -94,12 +101,11 @@ def main():
     None
     """
     camera_controller = PiCameraController()
-    camera_controller.pi_cam_init()
-    camera_controller.get_img(f"test_1")
+    
+    # Initialize with flips
     roi0 = (0.0, 0.2, 0.8, 0.8)
-    # roi1 = (0.0, 0.0, 1, 1)
-    camera_controller.pi_cam_init(roi=roi0)
-    camera_controller.get_img(f"test_0")
+    camera_controller.pi_cam_init(roi=roi0, hflip=True, vflip=True)
+    camera_controller.get_img(f"test_{i}")
 
 if __name__ == '__main__':
     main()

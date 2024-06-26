@@ -97,7 +97,7 @@ motor_controller = MotorController(25, 23, 24)
 steering_controller = SteeringController(17)
 
 camera_controller = PiCameraController()
-camera_controller.pi_cam_init(ROI)
+camera_controller.pi_cam_init(roi=ROI, hflip=True, vflip=True)
 
 def get_key_press():
     """
