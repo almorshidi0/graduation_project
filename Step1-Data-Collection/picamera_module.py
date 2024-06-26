@@ -55,15 +55,15 @@ class PiCameraController:
         """
         try:
             self.pi_cam = Picamera2()
-            config = self.pi_cam.create_still_configuration()
-            self.pi_cam.configure(config)
-            self.pi_cam.start()
+            # config = self.pi_cam.create_still_configuration()
+            # self.pi_cam.configure(config)
+            # self.pi_cam.start()
 
-            # Allow the camera to warm up
-            time.sleep(2)
+            # # Allow the camera to warm up
+            # time.sleep(2)
 
-            if roi:
-                self.pi_cam.set_controls({"ScalerCrop": roi})
+            # if roi:
+            #     self.pi_cam.set_controls({"ScalerCrop": roi})
         except Exception as e:
             print(f"Error initializing camera: {e}")
             # Optionally, handle the error or raise it further
@@ -100,8 +100,8 @@ def main():
     camera_controller = PiCameraController()
     camera_controller.pi_cam_init()
     camera_controller.get_img("test_1")
-    roi0 = (0.0, 0.2, 0.8, 0.8)
-    camera_controller.pi_cam_init(roi=roi0)
+    # roi0 = (0.0, 0.2, 0.8, 0.8)
+    # camera_controller.pi_cam_init(roi=roi0)
     camera_controller.get_img("test_0")
 
 if __name__ == '__main__':
