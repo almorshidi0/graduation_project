@@ -44,27 +44,29 @@ class PiCameraController:
 
     def pi_cam_init(self, roi=None):
         """
-        Initialize and start the PiCamera.
+        Initialize and start the PiCamera with error handling.
 
-        This method sets up the `pi_cam` attribute, configures the camera, and starts it.
-        
         Args:
         roi (tuple, optional): A tuple defining the region of interest (ROI) as (x, y, width, height).
-                               Each value should be a proportion of the total image dimensions (0.0 to 1.0).
+                            Each value should be a proportion of the total image dimensions (0.0 to 1.0).
         
         Returns:
         None
         """
-        self.pi_cam = Picamera2()
-        config = self.pi_cam.create_still_configuration()
-        self.pi_cam.configure(config)
-        self.pi_cam.start()
+        try:
+            self.pi_cam = Picamera2()
+            config = self.pi_cam.create_still_configuration()
+            self.pi_cam.configure(config)
+            self.pi_cam.start()
 
-        # Allow the camera to warm up
-        time.sleep(2)
+            # Allow the camera to warm up
+            time.sleep(2)
 
-        if roi:
-            self.pi_cam.set_controls({"ScalerCrop": roi})
+            if roi:
+                self.pi_cam.set_controls({"ScalerCrop": roi})
+        except Exception as e:
+            print(f"Error initializing camera: {e}")
+            # Optionally, handle the error or raise it further
 
     def get_img(self, file_name):
         """
