@@ -208,6 +208,7 @@ def main():
             motor_controller.release()
             steering_controller.set_angle(0)
             steering_controller.detach()
+            camera_controller.release()
             break
 
 if __name__ == "__main__":
