@@ -41,7 +41,7 @@ class PiCameraController:
 
     def pi_cam_init(self, roi=None):
         self.pi_cam = Picamera2()
-        config = self.pi_cam.still_configuration()
+        config = self.pi_cam.still_configuration
         
         # Check if config is a dictionary (error handling)
         if isinstance(config, dict):
