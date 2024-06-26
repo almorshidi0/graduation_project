@@ -31,6 +31,7 @@ This script is intended to run on a Raspberry Pi with a connected camera module.
 """
 
 from picamera2 import Picamera2
+import cv2
 
 class CameraController:
     """
@@ -44,14 +45,18 @@ class CameraController:
         self.picam2.configure(self.picam2.create_still_configuration())
         self.picam2.start()
 
-    def get_img(self, file_path='image.jpg'):
+    def get_img(self, file_path='image'):
         """
         Capture an image and save it to the specified file path.
 
         Args:
             file_path: Path to save the captured image. Default is 'image.jpg'.
         """
-        self.picam2.capture_file(file_path)
+        img_name = f"{file_path}.jpg"
+        self.picam2.capture_file(img_name)
+        img = cv2.imread(img_name)
+        img = cv2.flip(img)
+        cv2.imwrite(img_name, img)
         print(f"Image captured and saved to {file_path}")
 
     def release(self):
@@ -78,7 +83,7 @@ def main():
     print("Initializing the camera...")
     camera_controller = CameraController()
     print("Capturing image...")
-    camera_controller.get_img('test_image.jpg')
+    camera_controller.get_img('test_image0.jpg')
     camera_controller.release()
     print("Image captured and saved as 'test_image.jpg'.")
 
