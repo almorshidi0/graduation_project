@@ -169,7 +169,7 @@ def main():
     """
     global speed, angle, record, done, key_val, key_old, right_steering_error_handling
     while True:
-        angle = 0
+        angle = -0.1
         get_key_press()
         update_movement_controls()
 
