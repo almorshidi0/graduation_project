@@ -75,7 +75,7 @@ class PiCameraController:
         Returns:
         None
         """
-        self.pi_cam.capture_file(f"{file_name}.jpg")
+        self.pi_cam.capture(f"{file_name}.jpg")
 
 def main():
     """
