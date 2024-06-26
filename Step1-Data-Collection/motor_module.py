@@ -1,115 +1,91 @@
 """
-DC Motors Module
+Pi Camera Module
 =======================
 
-This module provides a simple interface to control a small car prototype with four DC motors using the `gpiozero` library.
+This module provides a simple interface to control a Pi Camera for capturing images and videos on a Raspberry Pi.
 
 Classes:
 --------
-- MotorController: A class to manage the initialization and control of the DC motors.
+- CameraController: A class to manage the initialization and control of the Pi Camera.
 
 Example Usage:
 --------------
-To use this module, create an instance of `MotorController` and call its methods.
+To use this module, create an instance of `CameraController` and call its methods.
 
-    from motor_module import MotorController
+    from picamera_module import CameraController
 
-    motor_controller = MotorController()
-    motor_controller.move(0.6)
+    camera_controller = CameraController()
+    camera_controller.capture_image('image.jpg')
 
-To test this module, you can run it directly as a script. It will perform a series of movements.
+To test this module, you can run it directly as a script. It will capture an image and save it to the current directory.
 
-    $ python3 motor_module.py
+    $ python3 picamera_module.py
 
 Dependencies:
 -------------
-- gpiozero: Ensure that the `gpiozero` library is installed and properly configured on your system.
+- picamera: Ensure that the `picamera` library is installed and properly configured on your system.
 
 Note:
 -----
-This script is intended to run on a Raspberry Pi with connected DC motors.
+This script is intended to run on a Raspberry Pi with a connected Pi Camera.
 """
 
-from gpiozero   import Motor
-from time       import sleep
+from picamera import PiCamera
+from time import sleep
 
-class MotorController:
+class CameraController:
     """
-    Class to control a DC motor module consisting of two motors.
+    Class to control a Pi Camera module.
     """
-    def __init__(self, ena1, in1, in2):
+    def __init__(self):
         """
-        Initialize the DC motor module with the specified GPIO pins.
+        Initialize the Pi Camera module.
+        """
+        self.camera = PiCamera()
+
+    def capture_image(self, filename):
+        """
+        Capture an image with the Pi Camera and save it to a file.
 
         Args:
-            ena1: GPIO pin for motor enable 1 (ENA1).
-            in1: GPIO pin for motor input 1 (IN1).
-            in2: GPIO pin for motor input 2 (IN2).
+            filename: Name of the file to save the captured image.
         """
-        self.motor = Motor(forward=in1, backward=in2, enable=ena1)
+        self.camera.capture(filename)
+        print(f"Captured image saved as {filename}")
 
-    def move(self, speed=0.5):
-        """
-        Move the motor forward with the specified speed.
-
-        Args:
-            speed: Speed of motion, ranging from -1 (full backward) to 1 (full forward). Default is 0.5.
-        """
-        speed = max(-1, min(1, speed))
-        if speed < 0:
-            self.motor.backward(-speed)
-        else:
-            self.motor.forward(speed)
-
-    def stop(self):
-        """Stop the motor."""
-        self.motor.stop()
-        
-    def release(self):
-        """Release the GPIO resources used by the motor."""
-        self.motor.close()
+    def close(self):
+        """Release the Pi Camera resources."""
+        self.camera.close()
 
 def main():
     """
     Main function for module testing.
 
-    This function creates an instance of `MotorController`, initializes the motors, and
-    performs a series of movements to test the motor control functions.
-    
+    This function creates an instance of `CameraController`, initializes the camera,
+    captures an image, records a video, and releases resources.
+
     This function is intended for testing purposes and should not be used
     when the module is imported elsewhere.
-    
+
     Args:
     None
-    
+
     Returns:
     None
     """
-    print("Let's introduce our motors to our PI!")
-    motor_controller = MotorController(25, 23, 24)
-    print("Let's go!")
+    print("Initializing Pi Camera...")
+    camera_controller = CameraController()
+    
     try:
-        while True:
-            # Move Forward
-            motor_controller.move(1)
-            sleep(2)
-            print("The car is moving forward!")
-            motor_controller.stop()
-            print("The car stopped moving!")
-            sleep(2)
-            
-            # Move Backward
-            motor_controller.move(-1)
-            print("The car is moving backward!")
-            sleep(2)
-            motor_controller.stop()
-            print("The car stopped moving!")
-            sleep(2)
-    except KeyboardInterrupt:
-        motor_controller.stop()
-        motor_controller.release()
-        print()
-        print("The car is now dead!")
+        # Capture an image
+        print("Capturing an image...")
+        camera_controller.capture_image('image.jpg')
+        sleep(2)
+        
+    finally:
+        # Cleanup
+        camera_controller.close()
+        print("Pi Camera module closed.")
 
 if __name__ == '__main__':
     main()
