@@ -57,7 +57,7 @@ class PiCameraController:
         self.pi_cam = Picamera2()
         # config = self.pi_cam.create_still_configuration()
         # self.pi_cam.configure(config)
-        # self.pi_cam.start()
+        self.pi_cam.start()
 
         # # Allow the camera to warm up
         time.sleep(2)
