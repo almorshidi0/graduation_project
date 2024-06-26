@@ -68,7 +68,7 @@ from data_collection_module import DataCollector
 from key_press_module       import KeyPressController
 from motor_module           import MotorController
 from steering_module        import SteeringController
-from picamera_module        import PiCameraController
+from picamera_module        import CameraController
 
 # Constants
 KEY_LIST = ["RIGHT", "LEFT", "UP", "DOWN", "r", "s", "k"]
@@ -96,7 +96,7 @@ motor_controller = MotorController(25, 23, 24)
 
 steering_controller = SteeringController(18)
 
-camera_controller = PiCameraController()
+camera_controller = CameraController()
 camera_controller.pi_cam_init(roi=ROI)
 
 def get_key_press():
