@@ -32,7 +32,6 @@ This script is intended to run on a Raspberry Pi with a connected camera module.
 """
 
 from picamera2 import Picamera2
-import libcamera
 import time
 
 class PiCameraController:
@@ -57,7 +56,6 @@ class PiCameraController:
         """
         self.pi_cam = Picamera2()
         config = self.pi_cam.create_still_configuration()
-        config.transform = libcamera.Transform(hflip=True, vflip=True)
         self.pi_cam.configure(config)
         self.pi_cam.start()
 
@@ -99,6 +97,7 @@ def main():
     camera_controller.pi_cam_init()
     camera_controller.get_img(f"test_1")
     roi0 = (0.0, 0.2, 0.8, 0.8)
+    # roi1 = (0.0, 0.0, 1, 1)
     camera_controller.pi_cam_init(roi=roi0)
     camera_controller.get_img(f"test_0")
 
