@@ -32,6 +32,7 @@ This script is intended to run on a Raspberry Pi with a connected camera module.
 """
 
 from picamera2 import Picamera2
+import libcamera
 import time
 
 class PiCameraController:
@@ -41,7 +42,7 @@ class PiCameraController:
         """
         self.pi_cam = None
 
-    def pi_cam_init(self, roi=None, hflip=False, vflip=False):
+    def pi_cam_init(self, roi=None):
         """
         Initialize and start the PiCamera.
 
@@ -50,23 +51,12 @@ class PiCameraController:
         Args:
         roi (tuple, optional): A tuple defining the region of interest (ROI) as (x, y, width, height).
                                Each value should be a proportion of the total image dimensions (0.0 to 1.0).
-        hflip (bool, optional): Horizontal flip the image.
-        vflip (bool, optional): Vertical flip the image.
         
         Returns:
         None
         """
         self.pi_cam = Picamera2()
-        config = self.pi_cam.create_still_configuration()
-
-        # Set the transformation controls
-        transform = {}
-        if hflip:
-            transform['hflip'] = True
-        if vflip:
-            transform['vflip'] = True
-        config['transform'] = transform
-
+        config = self.pi_cam.Picamera2.still_configuration(transform=libcamera.Transform(hflip=1, vflip=1))
         self.pi_cam.configure(config)
         self.pi_cam.start()
 
@@ -92,9 +82,8 @@ def main():
     """
     Main function for module testing.
 
-    This function creates an instance of `PiCameraController`, initializes the camera with
-    a specified region of interest (ROI) and flip settings, and then captures an image 
-    named 'test_0.jpg'.
+    This function creates an instance of `PiCameraController`, initializes the camera, and
+    then captures 10 images sequentially, saving them as 'test_0.jpg' to 'test_9.jpg'.
     
     This function is intended for testing purposes and should not be used
     when the module is imported elsewhere.
@@ -106,10 +95,11 @@ def main():
     None
     """
     camera_controller = PiCameraController()
-    
-    # Initialize with flips and ROI
+    camera_controller.pi_cam_init()
+    camera_controller.get_img(f"test_1")
     roi0 = (0.0, 0.2, 0.8, 0.8)
-    camera_controller.pi_cam_init(roi=roi0, hflip=True, vflip=True)
+    # roi1 = (0.0, 0.0, 1, 1)
+    camera_controller.pi_cam_init(roi=roi0)
     camera_controller.get_img(f"test_0")
 
 if __name__ == '__main__':
