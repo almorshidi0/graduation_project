@@ -77,7 +77,7 @@ def main():
     None
     """
     print("Let's introduce our steering servo motor to our PI!")
-    steering_controller = SteeringController(17)
+    steering_controller = SteeringController(18)
     right_steering_error_handling = 0
     print("Let's go!")
     try:

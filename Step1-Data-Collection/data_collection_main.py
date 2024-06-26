@@ -94,7 +94,7 @@ key_controller.key_press_init()
 
 motor_controller = MotorController(25, 23, 24)
 
-steering_controller = SteeringController(17)
+steering_controller = SteeringController(18)
 
 camera_controller = PiCameraController()
 camera_controller.pi_cam_init(roi=ROI)
