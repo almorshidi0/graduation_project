@@ -56,7 +56,7 @@ class PiCameraController:
         None
         """
         self.pi_cam = Picamera2()
-        config = self.pi_cam.Picamera2.still_configuration(transform=libcamera.Transform(hflip=1, vflip=1))
+        config = self.pi_cam.still_configuration(transform=libcamera.Transform(hflip=1, vflip=1))
         self.pi_cam.configure(config)
         self.pi_cam.start()
 
