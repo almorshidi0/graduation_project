@@ -93,7 +93,7 @@ def main():
     camera_controller = CameraController()
     print("Capturing image...")
     camera_controller.get_img('test_image0')
-    roi0 = (0.0, 0.0, 0.8, 0.8)
+    roi0 = (0.2, 0.2, 0.5, 0.5)
     camera_controller.get_img('test_image1')
     camera_controller.release()
     print("Image captured and saved as 'test_image.jpg'.")
