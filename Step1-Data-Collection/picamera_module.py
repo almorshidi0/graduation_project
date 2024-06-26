@@ -55,15 +55,15 @@ class PiCameraController:
         None
         """
         self.pi_cam = Picamera2()
-        config = self.pi_cam.create_still_configuration()
-        self.pi_cam.configure(config)
-        self.pi_cam.start()
+        # config = self.pi_cam.create_still_configuration()
+        # self.pi_cam.configure(config)
+        # self.pi_cam.start()
 
-        # Allow the camera to warm up
+        # # Allow the camera to warm up
         time.sleep(2)
 
-        if roi:
-            self.pi_cam.set_controls({"ScalerCrop": roi})
+        # if roi:
+        #     self.pi_cam.set_controls({"ScalerCrop": roi})
 
     def get_img(self, file_name):
         """
@@ -94,8 +94,8 @@ def main():
     None
     """
     camera_controller = PiCameraController()
-    roi = (0.0, 0.2, 0.8, 0.8)
-    camera_controller.pi_cam_init(roi=roi)
+    # roi = (0.0, 0.2, 0.8, 0.8)
+    # camera_controller.pi_cam_init(roi=roi)
     count = 0 
     while count < 10:
         camera_controller.get_img(f"test_{count}")
