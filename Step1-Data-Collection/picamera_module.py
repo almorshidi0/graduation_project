@@ -31,41 +31,80 @@ Note:
 This script is intended to run on a Raspberry Pi with a connected camera module.
 """
 
-from picamera import PiCamera
+from picamera2 import Picamera2
+import cv2
+import time
 
 class PiCameraController:
     def __init__(self):
+        """
+        Initialize the PiCameraController class.
+        """
         self.pi_cam = None
 
     def pi_cam_init(self, roi=None):
-        self.pi_cam = PiCamera()
+        """
+        Initialize and start the PiCamera.
 
-        # Adjust camera settings
-        self.pi_cam.resolution = (2592, 1944)  # Adjust resolution as needed
-        self.pi_cam.hflip = True
-        self.pi_cam.vflip = True
+        This method sets up the `pi_cam` attribute, configures the camera, and starts it.
+        
+        Args:
+        roi (tuple, optional): A tuple defining the region of interest (ROI) as (x, y, width, height).
+                               Each value should be a proportion of the total image dimensions (0.0 to 1.0).
+        
+        Returns:
+        None
+        """
+        self.pi_cam = Picamera2()
+        config = self.pi_cam.create_still_configuration()
+        self.pi_cam.configure(config)
+        self.pi_cam.start()
 
-        # Optionally set the region of interest (ROI)
+        # Allow the camera to warm up
+        time.sleep(2)
+
         if roi:
-            self.pi_cam.zoom = roi
+            self.pi_cam.set_controls({"ScalerCrop": roi})
 
     def get_img(self, file_name):
-        self.pi_cam.capture(f"{file_name}.jpg")
+        """
+        Capture an image and save it with the provided file name.
 
-    def close(self):
-        if self.pi_cam:
-            self.pi_cam.close()  # Close the camera instance
+        Args:
+        file_name (str): The name to save the image file as, without file extension.
+        
+        Returns:
+        None
+        """
+        img_name = f"{file_name}.jpg"
+        self.pi_cam.capture_file(img_name)
+        img = cv2.imread(img_name)
+        img = cv2.flip(img, -1)
+        cv2.imwrite(img_name, img)
 
 def main():
+    """
+    Main function for module testing.
+
+    This function creates an instance of `PiCameraController`, initializes the camera, and
+    then captures 10 images sequentially, saving them as 'test_0.jpg' to 'test_9.jpg'.
+    
+    This function is intended for testing purposes and should not be used
+    when the module is imported elsewhere.
+    
+    Args:
+    None
+    
+    Returns:
+    None
+    """
     camera_controller = PiCameraController()
-    try:
-        camera_controller.pi_cam_init()
-        camera_controller.get_img("test_1")
-        roi0 = (0.0, 0.2, 0.8, 0.8)
-        camera_controller.pi_cam_init(roi=roi0)
-        camera_controller.get_img("test_0")
-    finally:
-        camera_controller.close()
+    camera_controller.pi_cam_init()
+    camera_controller.get_img(f"test_1")
+    roi0 = (0.0, 0.2, 0.8, 0.8)
+    # roi1 = (0.0, 0.0, 1, 1)
+    camera_controller.pi_cam_init(roi=roi0)
+    camera_controller.get_img(f"test_0")
 
 if __name__ == '__main__':
     main()
