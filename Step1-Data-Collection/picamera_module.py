@@ -55,7 +55,7 @@ class CameraController:
         img_name = f"{file_path}.jpg"
         self.picam2.capture_file(img_name)
         img = cv2.imread(img_name)
-        img = cv2.flip(img)
+        img = cv2.flip(img, -1)
         cv2.imwrite(img_name, img)
         print(f"Image captured and saved to {file_path}")
 
