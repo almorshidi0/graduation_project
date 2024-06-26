@@ -83,7 +83,7 @@ def main():
     print("Initializing the camera...")
     camera_controller = CameraController()
     print("Capturing image...")
-    camera_controller.get_img('test_image0.jpg')
+    camera_controller.get_img('test_image0')
     camera_controller.release()
     print("Image captured and saved as 'test_image.jpg'.")
 
