@@ -59,9 +59,13 @@ class PiCameraController:
         self.pi_cam = Picamera2()
         config = self.pi_cam.create_still_configuration()
 
-        # Set the flip controls
-        config["controls"]["HorizontalFlip"] = hflip
-        config["controls"]["VerticalFlip"] = vflip
+        # Set the transformation controls
+        transform = 0
+        if hflip:
+            transform |= Picamera2.Transform.HFLIP
+        if vflip:
+            transform |= Picamera2.Transform.VFLIP
+        config["transform"] = transform
 
         self.pi_cam.configure(config)
         self.pi_cam.start()
@@ -88,8 +92,9 @@ def main():
     """
     Main function for module testing.
 
-    This function creates an instance of `PiCameraController`, initializes the camera, and
-    then captures 10 images sequentially, saving them as 'test_0.jpg' to 'test_9.jpg'.
+    This function creates an instance of `PiCameraController`, initializes the camera with
+    a specified region of interest (ROI) and flip settings, and then captures an image 
+    named 'test_0.jpg'.
     
     This function is intended for testing purposes and should not be used
     when the module is imported elsewhere.
@@ -102,10 +107,10 @@ def main():
     """
     camera_controller = PiCameraController()
     
-    # Initialize with flips
+    # Initialize with flips and ROI
     roi0 = (0.0, 0.2, 0.8, 0.8)
     camera_controller.pi_cam_init(roi=roi0, hflip=True, vflip=True)
-    camera_controller.get_img(f"test_{i}")
+    camera_controller.get_img(f"test_0")
 
 if __name__ == '__main__':
     main()
