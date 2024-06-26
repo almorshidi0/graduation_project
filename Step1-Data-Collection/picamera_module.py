@@ -60,12 +60,7 @@ class PiCameraController:
         config = self.pi_cam.create_still_configuration()
 
         # Set the transformation controls
-        transform = 0
-        if hflip:
-            transform |= Picamera2.Transform.HFLIP
-        if vflip:
-            transform |= Picamera2.Transform.VFLIP
-        config["transform"] = transform
+        config['transform'] = {'hflip': hflip, 'vflip': vflip}
 
         self.pi_cam.configure(config)
         self.pi_cam.start()
