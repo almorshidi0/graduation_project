@@ -18,7 +18,7 @@ To use this module, create an instance of `PiCameraController` and call its meth
     camera_controller.pi_cam_init()
     camera_controller.get_img("example_image")
 
-To test this module, you can run it directly as a script. It will initialize the camera and capture 10 images named 'test_0.jpg' to 'test_9.jpg'.
+To test this module, you can run it directly as a script.
 
     $ python3 picamera_module.py
 
@@ -63,9 +63,6 @@ class PiCameraController:
         """
         img_name = f"{file_name}.jpg"
         self.pi_cam.capture_file(img_name)
-        img = cv2.imread(img_name)
-        img = cv2.flip(img, -1)  # Flip horizontally and vertically
-        cv2.imwrite(img_name, img)
 
 def main():
     """
