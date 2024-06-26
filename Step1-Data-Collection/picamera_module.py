@@ -31,41 +31,41 @@ Note:
 This script is intended to run on a Raspberry Pi with a connected camera module.
 """
 
-from picamera2 import Picamera2
-import libcamera
-import time
+from picamera import PiCamera
 
 class PiCameraController:
     def __init__(self):
         self.pi_cam = None
 
     def pi_cam_init(self, roi=None):
-        self.pi_cam = Picamera2()
-        config = self.pi_cam.still_configuration
-        
-        # Check if config is a dictionary (error handling)
-        if isinstance(config, dict):
-            raise TypeError("Unexpected configuration format, expected CameraConfiguration object")
+        self.pi_cam = PiCamera()
 
-        config.transform = libcamera.Transform(hflip=True, vflip=True)  # Apply transformation here
-        self.pi_cam.configure(config)
-        self.pi_cam.start()
+        # Adjust camera settings
+        self.pi_cam.resolution = (2592, 1944)  # Adjust resolution as needed
+        self.pi_cam.hflip = True
+        self.pi_cam.vflip = True
 
-        time.sleep(2)
-
+        # Optionally set the region of interest (ROI)
         if roi:
-            self.pi_cam.set_controls({"ScalerCrop": roi})
+            self.pi_cam.zoom = roi
 
     def get_img(self, file_name):
-        self.pi_cam.capture_file(f"{file_name}.jpg")
+        self.pi_cam.capture(f"{file_name}.jpg")
+
+    def close(self):
+        if self.pi_cam:
+            self.pi_cam.close()  # Close the camera instance
 
 def main():
     camera_controller = PiCameraController()
-    camera_controller.pi_cam_init()
-    camera_controller.get_img("test_1")
-    roi0 = (0.0, 0.2, 0.8, 0.8)
-    camera_controller.pi_cam_init(roi=roi0)
-    camera_controller.get_img("test_0")
+    try:
+        camera_controller.pi_cam_init()
+        camera_controller.get_img("test_1")
+        roi0 = (0.0, 0.2, 0.8, 0.8)
+        camera_controller.pi_cam_init(roi=roi0)
+        camera_controller.get_img("test_0")
+    finally:
+        camera_controller.close()
 
 if __name__ == '__main__':
     main()
