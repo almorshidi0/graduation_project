@@ -1,87 +1,70 @@
 """
 PiCamera Module
-===============
+=======================
 
-This module provides a simple interface to initialize the PiCamera and capture images using the `picamera` library.
+This module provides a simple interface to capture images using the `picamera2` library on a Raspberry Pi.
 
 Classes:
 --------
-- PiCameraController: A class to manage the PiCamera initialization and image capture.
+- CameraController: A class to manage the initialization and capturing of images with the PiCamera.
 
 Example Usage:
 --------------
-To use this module, create an instance of `PiCameraController` and call its methods.
+To use this module, create an instance of `CameraController` and call its methods.
 
-    from picamera_module import PiCameraController
+    from picamera_module import CameraController
 
-    camera_controller = PiCameraController()
-    camera_controller.pi_cam_init()
-    camera_controller.get_img("example_image")
+    camera_controller = CameraController()
+    camera_controller.get_img('image.jpg')
 
-To test this module, you can run it directly as a script. It will initialize the camera and capture 10 images named 'test_0.jpg' to 'test_9.jpg'.
+To test this module, you can run it directly as a script. It will capture an image and save it as 'test_image.jpg'.
 
     $ python3 picamera_module.py
 
 Dependencies:
 -------------
-- picamera: Ensure that the `picamera` library is installed and properly configured on your system.
+- picamera2: Ensure that the `picamera2` library is installed and properly configured on your system.
 
 Note:
 -----
 This script is intended to run on a Raspberry Pi with a connected camera module.
 """
 
-from picamera import PiCamera
-import time
+from picamera2 import Picamera2
 
-class PiCameraController:
+class CameraController:
+    """
+    Class to control the PiCamera module.
+    """
     def __init__(self):
         """
-        Initialize the PiCameraController class.
+        Initialize the PiCamera module.
         """
-        self.pi_cam = None
+        self.picam2 = Picamera2()
+        self.picam2.configure(self.picam2.create_still_configuration())
+        self.picam2.start()
 
-    def pi_cam_init(self, roi=None):
+    def get_img(self, file_path='image.jpg'):
         """
-        Initialize the PiCamera.
-
-        This method sets up the `pi_cam` attribute and configures the camera.
-        
-        Args:
-        roi (tuple, optional): A tuple defining the region of interest (ROI) as (x, y, width, height).
-                               Each value should be a proportion of the total image dimensions (0.0 to 1.0).
-        
-        Returns:
-        None
-        """
-        self.pi_cam = PiCamera()
-        # Optionally, configure camera settings here
-        # Example: self.pi_cam.resolution = (1280, 720)
-
-        # Allow the camera to warm up
-        time.sleep(2)
-
-        if roi:
-            self.pi_cam.zoom = roi
-
-    def get_img(self, file_name):
-        """
-        Capture an image and save it with the provided file name.
+        Capture an image and save it to the specified file path.
 
         Args:
-        file_name (str): The name to save the image file as, without file extension.
-        
-        Returns:
-        None
+            file_path: Path to save the captured image. Default is 'image.jpg'.
         """
-        self.pi_cam.capture(f"{file_name}.jpg")
+        self.picam2.capture_file(file_path)
+        print(f"Image captured and saved to {file_path}")
+
+    def release(self):
+        """Release the PiCamera resources."""
+        self.picam2.stop()
+        self.picam2.close()
 
 def main():
     """
     Main function for module testing.
 
-    This function creates an instance of `PiCameraController`, initializes the camera, and
-    then captures 10 images sequentially, saving them as 'test_0.jpg' to 'test_9.jpg'.
+    This function creates an instance of `CameraController`, captures an image,
+    and saves it as 'test_image.jpg' to test the camera control functions.
     
     This function is intended for testing purposes and should not be used
     when the module is imported elsewhere.
@@ -92,14 +75,12 @@ def main():
     Returns:
     None
     """
-    camera_controller = PiCameraController()
-    # Optionally, set a region of interest (ROI)
-    # roi = (0.0, 0.2, 0.8, 0.8)  # Example: Crop 20% from the top and include 80% of the width and height
-    # camera_controller.pi_cam_init(roi=roi)
-    count = 0 
-    while count < 10:
-        camera_controller.get_img(f"test_{count}")
-        count += 1
+    print("Initializing the camera...")
+    camera_controller = CameraController()
+    print("Capturing image...")
+    camera_controller.get_img('test_image.jpg')
+    camera_controller.release()
+    print("Image captured and saved as 'test_image.jpg'.")
 
 if __name__ == '__main__':
     main()
