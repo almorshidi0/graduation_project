@@ -32,74 +32,40 @@ This script is intended to run on a Raspberry Pi with a connected camera module.
 """
 
 from picamera2 import Picamera2
+import libcamera
 import time
 
 class PiCameraController:
     def __init__(self):
-        """
-        Initialize the PiCameraController class.
-        """
         self.pi_cam = None
 
     def pi_cam_init(self, roi=None):
-        """
-        Initialize and start the PiCamera.
-
-        This method sets up the `pi_cam` attribute, configures the camera, and starts it.
-        
-        Args:
-        roi (tuple, optional): A tuple defining the region of interest (ROI) as (x, y, width, height).
-                               Each value should be a proportion of the total image dimensions (0.0 to 1.0).
-        
-        Returns:
-        None
-        """
         self.pi_cam = Picamera2()
-        config = self.pi_cam.create_still_configuration()
+        config = self.pi_cam.still_configuration()
+        
+        # Check if config is a dictionary (error handling)
+        if isinstance(config, dict):
+            raise TypeError("Unexpected configuration format, expected CameraConfiguration object")
+
+        config.transform = libcamera.Transform(hflip=True, vflip=True)  # Apply transformation here
         self.pi_cam.configure(config)
         self.pi_cam.start()
 
-        # Allow the camera to warm up
         time.sleep(2)
 
         if roi:
             self.pi_cam.set_controls({"ScalerCrop": roi})
 
     def get_img(self, file_name):
-        """
-        Capture an image and save it with the provided file name.
-
-        Args:
-        file_name (str): The name to save the image file as, without file extension.
-        
-        Returns:
-        None
-        """
         self.pi_cam.capture_file(f"{file_name}.jpg")
 
 def main():
-    """
-    Main function for module testing.
-
-    This function creates an instance of `PiCameraController`, initializes the camera, and
-    then captures 10 images sequentially, saving them as 'test_0.jpg' to 'test_9.jpg'.
-    
-    This function is intended for testing purposes and should not be used
-    when the module is imported elsewhere.
-    
-    Args:
-    None
-    
-    Returns:
-    None
-    """
     camera_controller = PiCameraController()
     camera_controller.pi_cam_init()
-    camera_controller.get_img(f"test_1")
+    camera_controller.get_img("test_1")
     roi0 = (0.0, 0.2, 0.8, 0.8)
-    # roi1 = (0.0, 0.0, 1, 1)
     camera_controller.pi_cam_init(roi=roi0)
-    camera_controller.get_img(f"test_0")
+    camera_controller.get_img("test_0")
 
 if __name__ == '__main__':
     main()
