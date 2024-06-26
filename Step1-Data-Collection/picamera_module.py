@@ -79,15 +79,12 @@ class PiCameraController:
         img_name = f"{file_name}.jpg"
         self.pi_cam.capture_file(img_name)
         img = cv2.imread(img_name)
-        img = cv2.flip(img, -1)
+        img = cv2.flip(img, -1)  # Flip horizontally and vertically
         cv2.imwrite(img_name, img)
 
 def main():
     """
     Main function for module testing.
-
-    This function creates an instance of `PiCameraController`, initializes the camera, and
-    then captures 10 images sequentially, saving them as 'test_0.jpg' to 'test_9.jpg'.
     
     This function is intended for testing purposes and should not be used
     when the module is imported elsewhere.
@@ -100,11 +97,10 @@ def main():
     """
     camera_controller = PiCameraController()
     camera_controller.pi_cam_init()
-    camera_controller.get_img(f"test_1")
+    camera_controller.get_img("test_1")
     roi0 = (0.0, 0.2, 0.8, 0.8)
-    # roi1 = (0.0, 0.0, 1, 1)
     camera_controller.pi_cam_init(roi=roi0)
-    camera_controller.get_img(f"test_0")
+    camera_controller.get_img("test_0")
 
 if __name__ == '__main__':
     main()
