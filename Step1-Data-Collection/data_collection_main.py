@@ -135,10 +135,10 @@ def update_movement_controls():
         angle = -0.5
     elif key_val == "UP":
         speed = DEFAULT_SPEED
-        angle = 0.1
+        angle = -0.1
     elif key_val == "DOWN":
         speed = -DEFAULT_SPEED
-        angle = 0.1
+        angle = -0.1
     elif key_val == "s":
         speed = 0
         angle = 0
