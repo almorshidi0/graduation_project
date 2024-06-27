@@ -130,8 +130,10 @@ def update_movement_controls():
     """
     global speed, angle, record, done, key_val, key_old
     if key_val == "RIGHT":
+        speed = speed
         angle = DEFAULT_ANGLE
     elif key_val == "LEFT":
+        speed = speed
         angle = -0.5
     elif key_val == "UP":
         speed = DEFAULT_SPEED
