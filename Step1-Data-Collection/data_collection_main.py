@@ -73,7 +73,7 @@ from picamera_module        import CameraController
 # Constants
 KEY_LIST = ["RIGHT", "LEFT", "UP", "DOWN", "r", "s", "k"]
 DEFAULT_SPEED = 1
-DEFAULT_ANGLE = 0.5
+DEFAULT_ANGLE = 0.7
 ROI = (0.0, 0.2, 0.8, 0.8) # Ratio of interest
 
 # Global Variables
@@ -130,17 +130,15 @@ def update_movement_controls():
     """
     global speed, angle, record, done, key_val, key_old
     if key_val == "RIGHT":
-        speed = DEFAULT_SPEED
         angle = DEFAULT_ANGLE
     elif key_val == "LEFT":
-        speed = DEFAULT_SPEED
-        angle = -DEFAULT_ANGLE
+        angle = -0.5
     elif key_val == "UP":
         speed = DEFAULT_SPEED
-        angle = 0
+        angle = 0.1
     elif key_val == "DOWN":
         speed = -DEFAULT_SPEED
-        angle = 0
+        angle = 0.1
     elif key_val == "s":
         speed = 0
         angle = 0
